@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: vehicle-management-application
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+  task:
+    execution:
+      thread-name-prefix: vehicle-management-task-
+      pool:
+        core-size: 2
+        max-size: 50
+        queue-capacity: 10000
+  flyway:
+    enabled: true
+    table: schema-version
+    baseline-description: initialize database
