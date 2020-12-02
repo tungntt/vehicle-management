@@ -9,8 +9,6 @@ import java.util.Set;
 @Table(name = "driver")
 @NamedEntityGraph(name = "graph.user.vehicles",
         attributeNodes = @NamedAttributeNode("vehicles"))
-@NamedEntityGraph(name = "graph.user.payments",
-        attributeNodes = @NamedAttributeNode("paymentHistories"))
 public class DriverEntity extends BaseEntity {
 
     private static final long serialVersionUID = 6634539184223857672L;
@@ -24,9 +22,6 @@ public class DriverEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<VehicleEntity> vehicles = new HashSet<>();
-
-    @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private Set<PaymentEntity> paymentHistories;
 
     public String getName() {
         return name;
@@ -52,11 +47,4 @@ public class DriverEntity extends BaseEntity {
         this.vehicles = vehicles;
     }
 
-    public Set<PaymentEntity> getPaymentHistories() {
-        return paymentHistories;
-    }
-
-    public void setPaymentHistories(final Set<PaymentEntity> paymentHistories) {
-        this.paymentHistories = paymentHistories;
-    }
 }
