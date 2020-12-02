@@ -1,0 +1,62 @@
+package vn.tungnt.interview.domain.entity;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "driver")
+@NamedEntityGraph(name = "graph.user.vehicles",
+        attributeNodes = @NamedAttributeNode("vehicles"))
+@NamedEntityGraph(name = "graph.user.payments",
+        attributeNodes = @NamedAttributeNode("paymentHistories"))
+public class DriverEntity extends BaseEntity {
+
+    private static final long serialVersionUID = 6634539184223857672L;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "date_of_birth", nullable = false)
+    private Date dateOfBirth;
+
+    @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private Set<VehicleEntity> vehicles = new HashSet<>();
+
+    @OneToMany(mappedBy = "driver", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private Set<PaymentEntity> paymentHistories;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(final Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Set<VehicleEntity> getVehicles() {
+        return vehicles;
+    }
+
+    public void setVehicles(final Set<VehicleEntity> vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public Set<PaymentEntity> getPaymentHistories() {
+        return paymentHistories;
+    }
+
+    public void setPaymentHistories(final Set<PaymentEntity> paymentHistories) {
+        this.paymentHistories = paymentHistories;
+    }
+}
