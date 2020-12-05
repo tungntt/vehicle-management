@@ -1,11 +1,10 @@
 package vn.tungnt.interview.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.tungnt.interview.service.DriverService;
 import vn.tungnt.interview.service.dto.DriverDTO;
+import vn.tungnt.interview.service.dto.PaymentDTO;
+import vn.tungnt.interview.service.dto.TransferringVehicleRequestDTO;
 
 @RestController
 @RequestMapping("api/driver")
@@ -20,5 +19,10 @@ public class DriverController {
     @PostMapping("/create")
     public DriverDTO createDriver(@RequestBody DriverDTO dto) {
         return this.driverService.add(dto);
+    }
+
+    @PutMapping("/transferring-vehicle")
+    public PaymentDTO checkoutTransferredVehicle(@RequestBody TransferringVehicleRequestDTO requestDTO) {
+        return this.driverService.requestToTransferVehicle(requestDTO);
     }
 }

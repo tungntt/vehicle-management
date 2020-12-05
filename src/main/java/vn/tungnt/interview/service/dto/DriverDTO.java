@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-public class DriverDTO extends BaseDTO implements Serializable {
+public class DriverDTO extends BaseDTO {
 
     private static final long serialVersionUID = -2659325374634490096L;
 

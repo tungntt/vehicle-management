@@ -3,7 +3,6 @@ package vn.tungnt.interview.domain.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(name = "payment_detail")
@@ -27,20 +26,20 @@ public class PaymentDetailEntity implements Serializable{
         @Column(name = "payment_id")
         private Long paymentId;
 
+        public PaymentDetailId(final Long driverId, final Long paymentId) {
+            this.driverId = driverId;
+            this.paymentId = paymentId;
+        }
+
+        public PaymentDetailId() {
+        }
+
         public Long getDriverId() {
             return driverId;
         }
 
-        public void setDriverId(final Long driverId) {
-            this.driverId = driverId;
-        }
-
         public Long getPaymentId() {
             return paymentId;
-        }
-
-        public void setPaymentId(final Long paymentId) {
-            this.paymentId = paymentId;
         }
 
         @Override
@@ -58,10 +57,6 @@ public class PaymentDetailEntity implements Serializable{
         }
     }
 
-    @GeneratedValue
-    @Column(name = "transaction_id", updatable = false, nullable = false, unique = true)
-    private UUID transactionId;
-
     @EmbeddedId
     private PaymentDetailId id;
 
@@ -74,15 +69,8 @@ public class PaymentDetailEntity implements Serializable{
     private PaymentEntity payment;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "business_man")
     private BusinessMan businessMan;
-
-    public UUID getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(final UUID transactionId) {
-        this.transactionId = transactionId;
-    }
 
     public PaymentDetailId getId() {
         return id;

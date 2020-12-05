@@ -1,8 +1,9 @@
 package vn.tungnt.interview.service.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class BaseDTO {
+public class BaseDTO implements Serializable {
 
     private static final String DEFAULT_CREATED_BY_VALUE = "admin";
 

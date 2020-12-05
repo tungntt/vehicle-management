@@ -31,6 +31,9 @@ public class VehicleEntity extends BaseEntity {
     @ColumnDefault(value = "0")
     private Integer odo;
 
+    @Enumerated(EnumType.STRING)
+    private VehicleStatus status = VehicleStatus.ACTIVE;
+
     @ManyToOne
     @JoinColumn(name = "driver_id")
     private DriverEntity driver;
@@ -73,6 +76,14 @@ public class VehicleEntity extends BaseEntity {
 
     public void setOdo(final Integer odo) {
         this.odo = odo;
+    }
+
+    public VehicleStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(final VehicleStatus status) {
+        this.status = status;
     }
 
     public DriverEntity getDriver() {

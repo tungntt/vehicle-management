@@ -1,11 +1,6 @@
 package vn.tungnt.interview.service.dto;
 
-import vn.tungnt.interview.service.dto.BaseDTO;
-import vn.tungnt.interview.service.dto.DriverDTO;
-
-import java.io.Serializable;
-
-public class VehicleDTO extends BaseDTO implements Serializable {
+public class VehicleDTO extends BaseDTO {
 
     private static final long serialVersionUID = 617057763259040614L;
 
