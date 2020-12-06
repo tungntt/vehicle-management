@@ -33,6 +33,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf()
                 .disable()
+                .headers().frameOptions().disable()
+                    .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
