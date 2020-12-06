@@ -6,7 +6,7 @@ import vn.tungnt.interview.service.dto.BaseDTO;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import static vn.tungnt.interview.config.Constants.USER_ROLE;
+import static vn.tungnt.interview.security.AuthoritiesConstants.USER;
 
 public class CredentialDTO extends BaseDTO {
 
@@ -23,7 +23,7 @@ public class CredentialDTO extends BaseDTO {
 
     protected boolean active = true;
 
-    protected String roles = USER_ROLE;
+    protected String roles = USER;
 
     public String getUserName() {
         return userName;

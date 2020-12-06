@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "profile")
+@Table(name = "credential")
 public class CredentialEntity extends BaseEntity {
 
     private static final long serialVersionUID = -6188800250598310187L;
