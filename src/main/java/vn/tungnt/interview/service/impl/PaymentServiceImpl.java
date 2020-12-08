@@ -10,11 +10,14 @@ import vn.tungnt.interview.domain.entity.PaymentDetailEntity.PaymentDetailId;
 import vn.tungnt.interview.domain.entity.PaymentEntity;
 import vn.tungnt.interview.domain.entity.PaymentEntity.PaymentStatus;
 import vn.tungnt.interview.domain.entity.VehicleEntity;
+import vn.tungnt.interview.domain.entity.VehicleEntity.VehicleStatus;
 import vn.tungnt.interview.repository.PaymentDetailRepository;
 import vn.tungnt.interview.repository.PaymentRepository;
 import vn.tungnt.interview.service.CheckoutService;
 import vn.tungnt.interview.service.PaymentService;
+import vn.tungnt.interview.service.dto.payment.CommitTransferringVehicleRequestDTO;
 import vn.tungnt.interview.service.dto.payment.PaymentDTO;
+import vn.tungnt.interview.service.exception.BusinessException;
 import vn.tungnt.interview.service.mapper.PaymentMapper;
 
 import java.util.Arrays;
@@ -61,6 +64,16 @@ public class PaymentServiceImpl extends AbstractService<PaymentEntity, PaymentDT
         LOG.info("Updated Payment Detail For Checkout");
 
         return this.mapper.toDTO(saved);
+    }
+
+    @Override
+    public PaymentDTO payTransferringBill(final CommitTransferringVehicleRequestDTO request) {
+        final PaymentEntity payment = this.repository.findById(request.getTransactionId())
+                .orElseThrow(() -> new BusinessException(String.format("There is no transaction transferring vehicle with id %s", request.getBankAccountId())));
+        payment.setStatus(PaymentStatus.PAYMENT_DONE);
+        payment.getTransferredVehicle().setStatus(VehicleStatus.ACTIVE);
+        this.repository.save(payment);
+        return this.mapper.toDTO(payment);
     }
 
     private PaymentDetailEntity createPaymentDetail(final DriverEntity driver, final PaymentEntity payment, final BusinessMan businessMan) {
