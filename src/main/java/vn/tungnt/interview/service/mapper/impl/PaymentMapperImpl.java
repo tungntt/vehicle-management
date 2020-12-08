@@ -2,10 +2,8 @@ package vn.tungnt.interview.service.mapper.impl;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import vn.tungnt.interview.domain.entity.DriverEntity;
 import vn.tungnt.interview.domain.entity.PaymentEntity;
-import vn.tungnt.interview.service.dto.DriverDTO;
-import vn.tungnt.interview.service.dto.PaymentDTO;
+import vn.tungnt.interview.service.dto.payment.PaymentDTO;
 import vn.tungnt.interview.service.mapper.DriverMapper;
 import vn.tungnt.interview.service.mapper.PaymentMapper;
 import vn.tungnt.interview.service.mapper.VehicleMapper;

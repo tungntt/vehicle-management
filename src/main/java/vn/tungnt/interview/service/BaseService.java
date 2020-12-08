@@ -12,7 +12,9 @@ public interface BaseService<E extends BaseEntity, D extends BaseDTO> {
 
     List<D> readAll();
 
-    Optional<D> readById(final Long id);
+    Optional<D> readById(final long id);
 
     D edit(final D d);
+
+    D remove(final long id);
 }

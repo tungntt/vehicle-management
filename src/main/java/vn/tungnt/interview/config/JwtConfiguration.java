@@ -9,7 +9,6 @@ public class JwtConfiguration {
 
     private String base64Secret;
     private long tokenValidityInSeconds;
-    private long tokenValidityInSecondsForRememberMe;
 
     public String getBase64Secret() {
         return base64Secret;
@@ -27,11 +26,4 @@ public class JwtConfiguration {
         this.tokenValidityInSeconds = tokenValidityInSeconds;
     }
 
-    public long getTokenValidityInSecondsForRememberMe() {
-        return tokenValidityInSecondsForRememberMe;
-    }
-
-    public void setTokenValidityInSecondsForRememberMe(final long tokenValidityInSecondsForRememberMe) {
-        this.tokenValidityInSecondsForRememberMe = tokenValidityInSecondsForRememberMe;
-    }
 }

@@ -1,10 +1,15 @@
 package vn.tungnt.interview.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.util.CollectionUtils;
 import vn.tungnt.interview.domain.entity.BaseEntity;
+import vn.tungnt.interview.domain.entity.CredentialEntity;
+import vn.tungnt.interview.repository.CredentialRepository;
+import vn.tungnt.interview.security.SecurityUtils;
 import vn.tungnt.interview.service.BaseService;
 import vn.tungnt.interview.service.dto.BaseDTO;
+import vn.tungnt.interview.service.exception.BusinessException;
 import vn.tungnt.interview.service.mapper.BaseMapper;
 
 import java.util.Collections;
@@ -19,6 +24,8 @@ public abstract class AbstractService<E extends BaseEntity, D extends BaseDTO>
 
     private final BaseMapper<E, D> mapper;
 
+    private CredentialRepository credentialRepository;
+
     public AbstractService(final JpaRepository<E, Long> repository, final BaseMapper<E, D> mapper) {
         this.repository = repository;
         this.mapper = mapper;
@@ -26,6 +33,7 @@ public abstract class AbstractService<E extends BaseEntity, D extends BaseDTO>
 
     @Override
     public D add(final D d) {
+        d.setCredentialId(this.getCurrentCredential().getId());
         final E e = this.create(d);
         return this.mapper.toDTO(e);
     }
@@ -46,13 +54,21 @@ public abstract class AbstractService<E extends BaseEntity, D extends BaseDTO>
     }
 
     @Override
-    public Optional<D> readById(final Long id) {
+    public Optional<D> readById(final long id) {
         final Optional<E> optional = this.repository.findById(id);
         if (optional.isPresent()) {
             final D d = this.mapper.toDTO(optional.get());
             return Optional.of(d);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public D remove(final long id) {
+        final D d = this.readById(id)
+                .orElseThrow(() -> new BusinessException(String.format("Not found instance by id %s", id)));
+        this.repository.deleteById(id);
+        return d;
     }
 
     /**
@@ -89,4 +105,17 @@ public abstract class AbstractService<E extends BaseEntity, D extends BaseDTO>
         return this.repository.save(entity);
     }
 
+    protected CredentialEntity getCurrentCredential() {
+        final String username = SecurityUtils
+                .getCurrentUserLogin()
+                .orElseThrow(() -> new BusinessException("No user loggin"));
+        CredentialEntity credential = this.credentialRepository.findByUserName(username)
+                .orElseThrow(() -> new BusinessException("Not found user"));
+        return credential;
+    }
+
+    @Autowired
+    public void setCredentialRepository(final CredentialRepository credentialRepository) {
+        this.credentialRepository = credentialRepository;
+    }
 }

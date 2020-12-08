@@ -3,20 +3,22 @@ package vn.tungnt.interview.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import vn.tungnt.interview.domain.entity.CredentialEntity;
 import vn.tungnt.interview.domain.entity.DriverEntity;
 import vn.tungnt.interview.domain.entity.VehicleEntity;
 import vn.tungnt.interview.domain.entity.VehicleEntity.VehicleStatus;
 import vn.tungnt.interview.repository.DriverRepository;
 import vn.tungnt.interview.service.DriverService;
 import vn.tungnt.interview.service.PaymentService;
-import vn.tungnt.interview.service.dto.DriverDTO;
-import vn.tungnt.interview.service.dto.PaymentDTO;
+import vn.tungnt.interview.service.dto.driver.DriverDTO;
+import vn.tungnt.interview.service.dto.payment.PaymentDTO;
 import vn.tungnt.interview.service.dto.TransferringVehicleRequestDTO;
 import vn.tungnt.interview.service.exception.BusinessException;
 import vn.tungnt.interview.service.mapper.DriverMapper;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
@@ -39,9 +41,10 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
     }
 
     @Override
-    public DriverDTO removeVehicle(final long driverId, final long vehicleId) {
-        final DriverEntity entity = this.repository.findById(driverId)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Not found driver with id %s", driverId)));
+    public DriverDTO removeVehicle(final long vehicleId) {
+        final CredentialEntity currentCredential = this.getCurrentCredential();
+        final DriverEntity entity = this.repository.findByCredential(currentCredential)
+                .orElseThrow(() -> new IllegalArgumentException(String.format("Not found driver of user %s", currentCredential.getUserName())));;
         entity.getVehicles().removeIf(v -> v.getId().equals(vehicleId));
         final DriverEntity updated = this.repository.save(entity);
         return this.mapper.toDTO(updated);
@@ -50,21 +53,13 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
     @Override
     public PaymentDTO requestToTransferVehicle(final TransferringVehicleRequestDTO requestDTO) {
         LOG.info("Begin To Make A Request For Transferring Vehicle");
-        final long ownerId = requestDTO.getOwnerId();
+        final CredentialEntity currentCredential = this.getCurrentCredential();
+        final DriverEntity ownerEntity = this.repository.findByCredential(currentCredential)
+                .orElseThrow(() -> new BusinessException(String.format("Not found driver of user %s", currentCredential.getUserName())));
         final long customerId = requestDTO.getCustomerId();
         final long vehicleId = requestDTO.getVehicleId();
-        if (ownerId == customerId) {
-            throw new BusinessException(String.format("Owner Id: %s equal Customer Id %s", ownerId, customerId));
-        }
-        final List<Long> ids = Arrays.asList(ownerId, customerId);
-        final List<DriverEntity> driverEntities = this.repository.findAllByIdIsIn(ids);
-        if (driverEntities.size() != 2) {
-            throw new BusinessException(String.format("Owner Id: %s or Customer Id %s is not existed", ownerId, customerId));
-        }
-        final DriverEntity ownerEntity = driverEntities
-                .stream().filter(d -> d.getId().equals(ownerId)).findFirst().get();
-        final DriverEntity customerEntity = driverEntities
-                .stream().filter(d -> d.getId().equals(customerId)).findFirst().get();
+        final DriverEntity customerEntity = this.repository.findById(customerId)
+                .orElseThrow(() -> new BusinessException(String.format("Not found customer driver by id %s", customerId)));
         final VehicleEntity transferredVehicle = ownerEntity.getVehicles().stream()
                 .filter(v -> v.getId().equals(vehicleId) && v.getStatus().equals(VehicleStatus.ACTIVE))
                 .findFirst()

@@ -2,7 +2,7 @@ package vn.tungnt.interview.service.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import vn.tungnt.interview.service.dto.VehicleDTO;
+import vn.tungnt.interview.service.dto.vehicle.VehicleDTO;
 import vn.tungnt.interview.domain.entity.VehicleEntity;
 
 @Mapper(componentModel = "spring", uses = {DriverMapper.class})

@@ -6,12 +6,15 @@ import java.util.Date;
 public class BaseDTO implements Serializable {
 
     private static final String DEFAULT_CREATED_BY_VALUE = "admin";
+    private static final long serialVersionUID = 5801978509689591237L;
 
     protected Long id;
 
     protected String createdBy = DEFAULT_CREATED_BY_VALUE;
 
     protected Date createdDate = new Date();
+
+    protected long credentialId;
 
     public Long getId() {
         return id;
@@ -35,5 +38,13 @@ public class BaseDTO implements Serializable {
 
     public void setCreatedDate(final Date createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public long getCredentialId() {
+        return credentialId;
+    }
+
+    public void setCredentialId(final long credentialId) {
+        this.credentialId = credentialId;
     }
 }

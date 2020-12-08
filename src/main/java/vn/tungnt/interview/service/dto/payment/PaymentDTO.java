@@ -1,6 +1,9 @@
-package vn.tungnt.interview.service.dto;
+package vn.tungnt.interview.service.dto.payment;
 
 import vn.tungnt.interview.domain.entity.PaymentEntity.PaymentStatus;
+import vn.tungnt.interview.service.dto.BaseDTO;
+import vn.tungnt.interview.service.dto.vehicle.VehicleDTO;
+import vn.tungnt.interview.service.dto.driver.DriverDTO;
 
 public class PaymentDTO extends BaseDTO {
 

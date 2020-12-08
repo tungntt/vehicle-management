@@ -21,6 +21,7 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -34,8 +35,6 @@ public class TokenProvider {
 
     private long tokenValidityInMilliseconds;
 
-    private long tokenValidityInMillisecondsForRememberMe;
-
     private JwtConfiguration jwtConfiguration;
 
     public TokenProvider(final JwtConfiguration jwtConfiguration) {
@@ -47,20 +46,13 @@ public class TokenProvider {
         byte[] keyBytes = Decoders.BASE64.decode(this.jwtConfiguration.getBase64Secret());
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.tokenValidityInMilliseconds = 1000 * this.jwtConfiguration.getTokenValidityInSeconds();
-        this.tokenValidityInMillisecondsForRememberMe = 1000 * this.jwtConfiguration.getTokenValidityInSecondsForRememberMe();
     }
 
-    public String createToken(Authentication authentication, boolean rememberMe) {
+    public String createToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
-        Date validity;
-        if (rememberMe) {
-            validity = new Date(now + this.tokenValidityInMillisecondsForRememberMe);
-        } else {
-            validity = new Date(now + this.tokenValidityInMilliseconds);
-        }
-
+        final Date validity = new Date(now + this.tokenValidityInMilliseconds);
         return Jwts
                 .builder()
                 .setSubject(authentication.getName())
@@ -83,10 +75,23 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private  <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        return claimsResolver.apply(claims);
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
     public boolean validateToken(String authToken) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
-            return true;
+            return !isTokenExpired(authToken);
         } catch (JwtException | IllegalArgumentException e) {
             LOG.info("Invalid JWT token.");
             LOG.trace("Invalid JWT token trace.", e);

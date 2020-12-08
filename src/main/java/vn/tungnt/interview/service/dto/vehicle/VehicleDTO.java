@@ -1,5 +1,10 @@
-package vn.tungnt.interview.service.dto;
+package vn.tungnt.interview.service.dto.vehicle;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import vn.tungnt.interview.service.dto.BaseDTO;
+import vn.tungnt.interview.service.dto.driver.DriverDTO;
+
+@JsonIgnoreProperties("driver")
 public class VehicleDTO extends BaseDTO {
 
     private static final long serialVersionUID = 617057763259040614L;

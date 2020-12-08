@@ -13,7 +13,7 @@ import vn.tungnt.interview.domain.entity.VehicleEntity;
 import vn.tungnt.interview.repository.PaymentDetailRepository;
 import vn.tungnt.interview.repository.PaymentRepository;
 import vn.tungnt.interview.service.PaymentService;
-import vn.tungnt.interview.service.dto.PaymentDTO;
+import vn.tungnt.interview.service.dto.payment.PaymentDTO;
 import vn.tungnt.interview.service.mapper.PaymentMapper;
 
 import java.util.Arrays;

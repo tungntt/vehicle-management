@@ -16,8 +16,8 @@ public class DriverEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", unique = true)
     private CredentialEntity credential;
 
     @Temporal(TemporalType.TIMESTAMP)

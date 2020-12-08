@@ -1,12 +1,15 @@
-package vn.tungnt.interview.service.dto;
+package vn.tungnt.interview.service.dto.driver;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import vn.tungnt.interview.service.dto.BaseDTO;
+import vn.tungnt.interview.service.dto.vehicle.VehicleDTO;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
+@JsonIgnoreProperties(value = "credentialId")
 public class DriverDTO extends BaseDTO {
 
     private static final long serialVersionUID = -2659325374634490096L;

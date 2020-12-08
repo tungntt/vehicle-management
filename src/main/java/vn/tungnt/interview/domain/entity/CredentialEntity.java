@@ -10,7 +10,7 @@ public class CredentialEntity extends BaseEntity {
 
     private static final long serialVersionUID = -6188800250598310187L;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", unique = true)
     private String userName;
 
     @Column(name = "pass_word")

@@ -25,4 +25,3 @@ app:
       base64-secret: YzhiYWI4OTE3MmQ0NDhjZDJjNGYxZTJiYTBmZmU0YTkyY2IzNjliMjcyNTE2ZDRhNGFjYjQxODU3M2U0MTlhMzI2NzVhNjIzMjM2Njc5ZGViMzk3MWI1YWIwZTc0MGUxMzI3OGU2YjFlMDdlM2FmZTg0MjVhMmM3N2Q3ODhiMWY=
       # Token is valid 24 hours
       token-validity-in-seconds: 86400
-      token-validity-in-seconds-for-remember-me: 2592000
