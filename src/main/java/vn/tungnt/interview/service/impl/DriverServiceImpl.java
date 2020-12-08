@@ -8,6 +8,7 @@ import vn.tungnt.interview.domain.entity.DriverEntity;
 import vn.tungnt.interview.domain.entity.VehicleEntity;
 import vn.tungnt.interview.domain.entity.VehicleEntity.VehicleStatus;
 import vn.tungnt.interview.repository.DriverRepository;
+import vn.tungnt.interview.service.CheckoutService;
 import vn.tungnt.interview.service.DriverService;
 import vn.tungnt.interview.service.PaymentService;
 import vn.tungnt.interview.service.dto.driver.DriverDTO;
@@ -30,14 +31,14 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
 
     private final DriverMapper mapper;
 
-    private final PaymentService paymentService;
+    private final CheckoutService checkoutService;
 
     public DriverServiceImpl(final DriverRepository repository, final DriverMapper mapper,
-                             final PaymentService paymentService) {
+                             final CheckoutService checkoutService) {
         super(repository, mapper);
         this.repository = repository;
         this.mapper = mapper;
-        this.paymentService = paymentService;
+        this.checkoutService = checkoutService;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
                 .filter(v -> v.getId().equals(vehicleId) && v.getStatus().equals(VehicleStatus.ACTIVE))
                 .findFirst()
                 .orElseThrow(() -> new BusinessException(String.format("Not found vehicle with id %s for transferring", vehicleId)));
-        final PaymentDTO bill = this.paymentService.checkout(ownerEntity, customerEntity, transferredVehicle);
+        final PaymentDTO bill = this.checkoutService.checkout(ownerEntity, customerEntity, transferredVehicle);
         LOG.info("Make Order Successfully!!!");
         transferredVehicle.setStatus(VehicleStatus.TRANSFERRING);
         transferredVehicle.setDriver(customerEntity);

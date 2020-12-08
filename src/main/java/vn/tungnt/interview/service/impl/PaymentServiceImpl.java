@@ -12,6 +12,7 @@ import vn.tungnt.interview.domain.entity.PaymentEntity.PaymentStatus;
 import vn.tungnt.interview.domain.entity.VehicleEntity;
 import vn.tungnt.interview.repository.PaymentDetailRepository;
 import vn.tungnt.interview.repository.PaymentRepository;
+import vn.tungnt.interview.service.CheckoutService;
 import vn.tungnt.interview.service.PaymentService;
 import vn.tungnt.interview.service.dto.payment.PaymentDTO;
 import vn.tungnt.interview.service.mapper.PaymentMapper;
@@ -21,7 +22,8 @@ import java.util.List;
 
 
 @Service
-public class PaymentServiceImpl extends AbstractService<PaymentEntity, PaymentDTO> implements PaymentService {
+public class PaymentServiceImpl extends AbstractService<PaymentEntity, PaymentDTO>
+        implements PaymentService, CheckoutService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
