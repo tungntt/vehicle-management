@@ -58,8 +58,8 @@ public class PaymentServiceImpl extends AbstractService<PaymentEntity, PaymentDT
         LOG.info("Saved Payment For Checkout");
 
         final List<PaymentDetailEntity> paymentDetails = Arrays
-                .asList(this.createPaymentDetail(owner, saved, BusinessMan.BUYER),
-                        this.createPaymentDetail(customer, saved, BusinessMan.SELLER));
+                .asList(this.createPaymentDetail(owner, saved, BusinessMan.SELLER),
+                        this.createPaymentDetail(customer, saved, BusinessMan.BUYER));
         this.paymentDetailRepository.saveAll(paymentDetails);
         LOG.info("Updated Payment Detail For Checkout");
 
