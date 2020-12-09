@@ -2,26 +2,28 @@ package vn.tungnt.interview.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import vn.tungnt.interview.domain.entity.CredentialEntity;
 import vn.tungnt.interview.domain.entity.DriverEntity;
 import vn.tungnt.interview.domain.entity.VehicleEntity;
 import vn.tungnt.interview.domain.entity.VehicleEntity.VehicleStatus;
 import vn.tungnt.interview.repository.CredentialRepository;
 import vn.tungnt.interview.repository.DriverRepository;
+import vn.tungnt.interview.repository.VehicleRepository;
 import vn.tungnt.interview.service.CheckoutService;
 import vn.tungnt.interview.service.DriverService;
 import vn.tungnt.interview.service.PaymentService;
 import vn.tungnt.interview.service.dto.driver.DriverDTO;
 import vn.tungnt.interview.service.dto.payment.PaymentDTO;
 import vn.tungnt.interview.service.dto.TransferringVehicleRequestDTO;
+import vn.tungnt.interview.service.dto.vehicle.VehicleDTO;
 import vn.tungnt.interview.service.exception.BusinessException;
 import vn.tungnt.interview.service.mapper.DriverMapper;
+import vn.tungnt.interview.service.mapper.VehicleMapper;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
@@ -31,7 +33,11 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
 
     private final DriverRepository repository;
 
+    private VehicleRepository vehicleRepository;
+
     private final DriverMapper mapper;
+
+    private VehicleMapper vehicleMapper;
 
     private final CheckoutService checkoutService;
 
@@ -41,6 +47,13 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
         this.repository = repository;
         this.mapper = mapper;
         this.checkoutService = checkoutService;
+    }
+
+    @Override
+    public List<DriverDTO> readAll() {
+        final List<DriverEntity> drivers = this.findAll();
+        drivers.forEach(d -> d.setVehicles(null));
+        return this.mapper.toDto(drivers);
     }
 
     @Override
@@ -73,6 +86,17 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
     }
 
     @Override
+    public List<VehicleDTO> getAllOwnVehicles() {
+        final CredentialEntity currentCredential = this.getCurrentCredential();
+        if (Objects.isNull(currentCredential.getDriverInfo())) {
+            return Collections.emptyList();
+        }
+        final List<VehicleEntity> drivers = this.vehicleRepository.getAllByDriver(currentCredential.getDriverInfo());
+        drivers.forEach(d -> d.setDriver(null));
+        return this.vehicleMapper.toDto(drivers);
+    }
+
+    @Override
     public PaymentDTO requestToTransferVehicle(final TransferringVehicleRequestDTO requestDTO) {
         LOG.info("Begin To Make A Request For Transferring Vehicle");
         final CredentialEntity currentCredential = this.getCurrentCredential();
@@ -102,4 +126,13 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
         return bill;
     }
 
+    @Autowired
+    public void setVehicleRepository(final VehicleRepository vehicleRepository) {
+        this.vehicleRepository = vehicleRepository;
+    }
+
+    @Autowired
+    public void setVehicleMapper(final VehicleMapper vehicleMapper) {
+        this.vehicleMapper = vehicleMapper;
+    }
 }

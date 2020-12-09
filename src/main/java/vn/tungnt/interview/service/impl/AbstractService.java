@@ -42,13 +42,12 @@ public abstract class AbstractService<E extends BaseEntity, D extends BaseDTO>
         return this.mapper.toDTO(e);
     }
 
-    @Override
-    public List<D> readAll() {
+    protected List<E> findAll() {
         final List<E> all = this.repository.findAll();
         if (CollectionUtils.isEmpty(all)) {
             return Collections.emptyList();
         }
-        return this.mapper.toDto(all);
+        return all;
     }
 
     @Override

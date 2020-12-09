@@ -11,6 +11,7 @@ import vn.tungnt.interview.domain.entity.VehicleEntity.VehicleStatus;
 import vn.tungnt.interview.repository.PaymentDetailRepository;
 import vn.tungnt.interview.repository.PaymentRepository;
 import vn.tungnt.interview.service.CheckoutService;
+import vn.tungnt.interview.service.PaymentManagementService;
 import vn.tungnt.interview.service.PaymentService;
 import vn.tungnt.interview.service.dto.payment.CommitTransferringVehicleRequestDTO;
 import vn.tungnt.interview.service.dto.payment.PaymentDTO;
@@ -20,11 +21,12 @@ import vn.tungnt.interview.service.mapper.PaymentMapper;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
 public class PaymentServiceImpl extends AbstractService<PaymentEntity, PaymentDTO>
-        implements PaymentService, CheckoutService {
+        implements PaymentService, CheckoutService, PaymentManagementService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
@@ -95,5 +97,16 @@ public class PaymentServiceImpl extends AbstractService<PaymentEntity, PaymentDT
         paymentDetail.setPayment(payment);
         paymentDetail.setBusinessMan(businessMan);
         return paymentDetail;
+    }
+
+    @Override
+    public List<PaymentDTO> readAll() {
+        final List<PaymentEntity> payments = this.findAll();
+        payments.forEach(p -> {
+            final Set<DriverEntity> drivers = p.getDrivers();
+            drivers.forEach(d -> d.setVehicles(null));
+            p.getTransferredVehicle().setDriver(null);
+        });
+        return this.mapper.toDto(payments);
     }
 }
