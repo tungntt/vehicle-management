@@ -1,6 +1,8 @@
 spring:
   application:
     name: vehicle-management-application
+  profiles:
+    active: dev
   data:
     jpa:
       repositories:
