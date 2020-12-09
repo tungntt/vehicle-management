@@ -12,23 +12,22 @@ import vn.tungnt.interview.service.dto.vehicle.VehicleDTO;
 import vn.tungnt.interview.service.exception.BusinessException;
 import vn.tungnt.interview.service.mapper.VehicleMapper;
 
+import java.util.Objects;
+
 @Service
 public class VehicleServiceImpl extends AbstractService<VehicleEntity, VehicleDTO> implements VehicleService {
 
-    private final DriverRepository driverRepository;
-
-    public VehicleServiceImpl(final VehicleRepository repository, final DriverRepository driverRepository,
-                              final VehicleMapper mapper) {
+    public VehicleServiceImpl(final VehicleRepository repository, final VehicleMapper mapper) {
         super(repository, mapper);
-        this.driverRepository = driverRepository;
     }
 
     @Override
     public VehicleDTO add(final VehicleDTO vehicleDTO) {
         final CredentialEntity currentCredential = this.getCurrentCredential();
-        final DriverEntity driverEntity = this.driverRepository
-                .findByCredential(currentCredential)
-                .orElseThrow(() -> new BusinessException(String.format("Not found driver of user %s", currentCredential.getUserName())));
+        if (Objects.isNull(currentCredential.getDriverInfo())) {
+            throw new BusinessException("User have no driver information");
+        }
+        final DriverEntity driverEntity = currentCredential.getDriverInfo();
         vehicleDTO.setDriver(new DriverDTO());
         vehicleDTO.getDriver().setId(driverEntity.getId());
         return super.add(vehicleDTO);

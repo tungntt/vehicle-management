@@ -12,8 +12,6 @@ import java.util.Optional;
 @Repository
 public interface DriverRepository extends JpaRepository<DriverEntity, Long> {
 
-    Optional<DriverEntity> findByCredential(final CredentialEntity credentialEntity);
-
     @EntityGraph(value = "graph.user.vehicles", type = EntityGraph.EntityGraphType.LOAD)
     Optional<DriverEntity> findById(long id);
 

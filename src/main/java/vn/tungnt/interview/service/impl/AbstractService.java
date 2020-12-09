@@ -89,7 +89,7 @@ public abstract class AbstractService<E extends BaseEntity, D extends BaseDTO>
         if (isExisted) {
             return this.save(d);
         } else {
-            throw new IllegalArgumentException(String.format("Not found %s with id %s", d.getClass().getName(), d.getId()));
+            throw new BusinessException(String.format("Not found %s with id %s", d.getClass().getSuperclass().getSimpleName(), d.getId()));
         }
     }
 
@@ -107,6 +107,10 @@ public abstract class AbstractService<E extends BaseEntity, D extends BaseDTO>
         final String username = this.getCurrentUserName();
         return this.credentialRepository.findByUserName(username)
                 .orElseThrow(() -> new BusinessException("Not found user"));
+    }
+
+    protected void updateCurrentCredential(final CredentialEntity entity) {
+        this.credentialRepository.save(entity);
     }
 
     protected String getCurrentUserName() throws BusinessException {

@@ -16,10 +16,6 @@ public class DriverEntity extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true)
-    private CredentialEntity credential;
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date_of_birth", nullable = false)
     private Date dateOfBirth;
@@ -33,14 +29,6 @@ public class DriverEntity extends BaseEntity {
 
     public void setName(final String name) {
         this.name = name;
-    }
-
-    public CredentialEntity getCredential() {
-        return credential;
-    }
-
-    public void setCredential(final CredentialEntity credential) {
-        this.credential = credential;
     }
 
     public Date getDateOfBirth() {

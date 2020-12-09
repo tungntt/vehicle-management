@@ -7,6 +7,7 @@ import vn.tungnt.interview.domain.entity.CredentialEntity;
 import vn.tungnt.interview.domain.entity.DriverEntity;
 import vn.tungnt.interview.domain.entity.VehicleEntity;
 import vn.tungnt.interview.domain.entity.VehicleEntity.VehicleStatus;
+import vn.tungnt.interview.repository.CredentialRepository;
 import vn.tungnt.interview.repository.DriverRepository;
 import vn.tungnt.interview.service.CheckoutService;
 import vn.tungnt.interview.service.DriverService;
@@ -19,6 +20,7 @@ import vn.tungnt.interview.service.mapper.DriverMapper;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -42,10 +44,29 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
     }
 
     @Override
+    public DriverDTO add(final DriverDTO driverDTO) {
+        final DriverDTO savedDTO = super.add(driverDTO);
+        final CredentialEntity currentCredential = this.getCurrentCredential();
+        currentCredential.setDriverInfo(this.mapper.toEntity(savedDTO));
+        this.updateCurrentCredential(currentCredential);
+        return savedDTO;
+    }
+
+    @Override
+    public DriverDTO remove(final long id) {
+        final CredentialEntity currentCredential = this.getCurrentCredential();
+        currentCredential.setDriverInfo(null);
+        this.updateCurrentCredential(currentCredential);
+        return super.remove(id);
+    }
+
+    @Override
     public DriverDTO removeVehicle(final long vehicleId) {
         final CredentialEntity currentCredential = this.getCurrentCredential();
-        final DriverEntity entity = this.repository.findByCredential(currentCredential)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Not found driver of user %s", currentCredential.getUserName())));;
+        if (Objects.isNull(currentCredential.getDriverInfo())) {
+            throw new BusinessException("User have no driver information");
+        }
+        final DriverEntity entity = currentCredential.getDriverInfo();
         entity.getVehicles().removeIf(v -> v.getId().equals(vehicleId));
         final DriverEntity updated = this.repository.save(entity);
         return this.mapper.toDTO(updated);
@@ -55,8 +76,10 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
     public PaymentDTO requestToTransferVehicle(final TransferringVehicleRequestDTO requestDTO) {
         LOG.info("Begin To Make A Request For Transferring Vehicle");
         final CredentialEntity currentCredential = this.getCurrentCredential();
-        final DriverEntity ownerEntity = this.repository.findByCredential(currentCredential)
-                .orElseThrow(() -> new BusinessException(String.format("Not found driver of user %s", currentCredential.getUserName())));
+        if (Objects.isNull(currentCredential.getDriverInfo())) {
+            throw new BusinessException("User have no driver information");
+        }
+        final DriverEntity ownerEntity = currentCredential.getDriverInfo();
         final long customerId = requestDTO.getCustomerId();
         if (ownerEntity.getId() == customerId) {
             throw new BusinessException("Owner id equal customer id");

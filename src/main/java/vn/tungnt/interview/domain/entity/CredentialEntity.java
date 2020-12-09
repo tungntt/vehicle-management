@@ -1,8 +1,6 @@
 package vn.tungnt.interview.domain.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "credential")
@@ -21,6 +19,10 @@ public class CredentialEntity extends BaseEntity {
 
     @Column
     private String roles;
+
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "driver_id", unique = true)
+    private DriverEntity driverInfo;
 
     public String getUserName() {
         return userName;
@@ -52,5 +54,13 @@ public class CredentialEntity extends BaseEntity {
 
     public void setRoles(final String roles) {
         this.roles = roles;
+    }
+
+    public DriverEntity getDriverInfo() {
+        return driverInfo;
+    }
+
+    public void setDriverInfo(final DriverEntity driverInfo) {
+        this.driverInfo = driverInfo;
     }
 }
