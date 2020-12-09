@@ -1,31 +1,23 @@
 package vn.tungnt.interview.service.dto.payment;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import vn.tungnt.interview.domain.entity.PaymentEntity.PaymentStatus;
 import vn.tungnt.interview.service.dto.BaseDTO;
 import vn.tungnt.interview.service.dto.vehicle.VehicleDTO;
-import vn.tungnt.interview.service.dto.driver.DriverDTO;
 
+@JsonIgnoreProperties(value = "credentialId")
 public class PaymentDTO extends BaseDTO {
 
     private static final long serialVersionUID = -855814479114870025L;
 
-    private String transactionId;
-
     private PaymentStatus status;
 
-    private DriverDTO buyer;
+    private TraderDTO buyer;
 
-    private DriverDTO seller;
+    private TraderDTO seller;
 
+    @JsonIgnoreProperties(value = {"createdBy", "createdDate", "credentialId"})
     private VehicleDTO transferredVehicle;
-
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(final String transactionId) {
-        this.transactionId = transactionId;
-    }
 
     public PaymentStatus getStatus() {
         return status;
@@ -35,19 +27,19 @@ public class PaymentDTO extends BaseDTO {
         this.status = status;
     }
 
-    public DriverDTO getBuyer() {
+    public TraderDTO getBuyer() {
         return buyer;
     }
 
-    public void setBuyer(final DriverDTO buyer) {
+    public void setBuyer(final TraderDTO buyer) {
         this.buyer = buyer;
     }
 
-    public DriverDTO getSeller() {
+    public TraderDTO getSeller() {
         return seller;
     }
 
-    public void setSeller(final DriverDTO seller) {
+    public void setSeller(final TraderDTO seller) {
         this.seller = seller;
     }
 

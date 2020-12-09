@@ -21,6 +21,7 @@ import vn.tungnt.interview.service.exception.BusinessException;
 import vn.tungnt.interview.service.mapper.PaymentMapper;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 
@@ -53,6 +54,8 @@ public class PaymentServiceImpl extends AbstractService<PaymentEntity, PaymentDT
         payment.setTransferredVehicle(transferredVehicle);
         payment.setStatus(PaymentStatus.IN_PROGRESS);
         payment.setCost(FIXED_TRANSFERRING_COST);
+        payment.setCreatedBy(this.getCurrentCredential().getUserName());
+        payment.setCreatedDate(new Date());
 
         final PaymentEntity saved = this.repository.save(payment);
         LOG.info("Saved Payment For Checkout");
@@ -63,7 +66,10 @@ public class PaymentServiceImpl extends AbstractService<PaymentEntity, PaymentDT
         this.paymentDetailRepository.saveAll(paymentDetails);
         LOG.info("Updated Payment Detail For Checkout");
 
-        return this.mapper.toDTO(saved);
+        final PaymentDTO paymentDTO = this.mapper.toDTO(saved);
+        paymentDTO.setBuyer(this.mapper.toTraderDTO(customer));
+        paymentDTO.setSeller(this.mapper.toTraderDTO(owner));
+        return paymentDTO;
     }
 
     @Override

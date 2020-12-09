@@ -58,6 +58,9 @@ public class DriverServiceImpl extends AbstractService<DriverEntity, DriverDTO>
         final DriverEntity ownerEntity = this.repository.findByCredential(currentCredential)
                 .orElseThrow(() -> new BusinessException(String.format("Not found driver of user %s", currentCredential.getUserName())));
         final long customerId = requestDTO.getCustomerId();
+        if (ownerEntity.getId() == customerId) {
+            throw new BusinessException("Owner id equal customer id");
+        }
         final long vehicleId = requestDTO.getVehicleId();
         final DriverEntity customerEntity = this.repository.findById(customerId)
                 .orElseThrow(() -> new BusinessException(String.format("Not found customer driver by id %s", customerId)));

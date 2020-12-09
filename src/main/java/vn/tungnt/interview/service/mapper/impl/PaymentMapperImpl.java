@@ -2,16 +2,16 @@ package vn.tungnt.interview.service.mapper.impl;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import vn.tungnt.interview.domain.entity.DriverEntity;
 import vn.tungnt.interview.domain.entity.PaymentEntity;
 import vn.tungnt.interview.service.dto.payment.PaymentDTO;
+import vn.tungnt.interview.service.dto.payment.TraderDTO;
+import vn.tungnt.interview.service.dto.vehicle.VehicleDTO;
 import vn.tungnt.interview.service.mapper.DriverMapper;
 import vn.tungnt.interview.service.mapper.PaymentMapper;
 import vn.tungnt.interview.service.mapper.VehicleMapper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class PaymentMapperImpl implements PaymentMapper {
@@ -49,6 +49,18 @@ public class PaymentMapperImpl implements PaymentMapper {
         }
 
         final PaymentDTO dto = new PaymentDTO();
+        final VehicleDTO vehicleDTO = new VehicleDTO();
+        vehicleDTO.setId(entity.getTransferredVehicle().getId());
+        vehicleDTO.setBrand(entity.getTransferredVehicle().getBrand());
+        vehicleDTO.setModel(entity.getTransferredVehicle().getModel());
+        vehicleDTO.setYear(entity.getTransferredVehicle().getYear());
+        vehicleDTO.setOdo(entity.getTransferredVehicle().getOdo());
+        vehicleDTO.setPlateNumber(entity.getTransferredVehicle().getPlateNumber());
+        dto.setId(entity.getId());
+        dto.setTransferredVehicle(vehicleDTO);
+        dto.setCreatedBy(entity.getCreatedBy());
+        dto.setCreatedDate(entity.getCreatedDate());
+        dto.setStatus(entity.getStatus());
 
 
         return dto;
@@ -72,5 +84,14 @@ public class PaymentMapperImpl implements PaymentMapper {
     @Override
     public List<PaymentDTO> toDto(final List<PaymentEntity> entityList) {
         return null;
+    }
+
+    @Override
+    public TraderDTO toTraderDTO(final DriverEntity entity) {
+        final TraderDTO traderDTO = new TraderDTO();
+        traderDTO.setId(entity.getId());
+        traderDTO.setName(entity.getName());
+        traderDTO.setDateOfBirth(entity.getDateOfBirth());
+        return traderDTO;
     }
 }

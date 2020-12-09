@@ -12,10 +12,7 @@ import vn.tungnt.interview.service.dto.BaseDTO;
 import vn.tungnt.interview.service.exception.BusinessException;
 import vn.tungnt.interview.service.mapper.BaseMapper;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public abstract class AbstractService<E extends BaseEntity, D extends BaseDTO>
         implements BaseService<E, D> {
@@ -33,13 +30,14 @@ public abstract class AbstractService<E extends BaseEntity, D extends BaseDTO>
 
     @Override
     public D add(final D d) {
-        d.setCredentialId(this.getCurrentCredential().getId());
+        this.buildBaseDTO(d);
         final E e = this.create(d);
         return this.mapper.toDTO(e);
     }
 
     @Override
     public D edit(final D d) {
+        this.buildBaseDTO(d);
         final E e = this.update(d);
         return this.mapper.toDTO(e);
     }
@@ -106,12 +104,21 @@ public abstract class AbstractService<E extends BaseEntity, D extends BaseDTO>
     }
 
     protected CredentialEntity getCurrentCredential() {
-        final String username = SecurityUtils
+        final String username = this.getCurrentUserName();
+        return this.credentialRepository.findByUserName(username)
+                .orElseThrow(() -> new BusinessException("Not found user"));
+    }
+
+    protected String getCurrentUserName() throws BusinessException {
+        return SecurityUtils
                 .getCurrentUserLogin()
                 .orElseThrow(() -> new BusinessException("No user loggin"));
-        CredentialEntity credential = this.credentialRepository.findByUserName(username)
-                .orElseThrow(() -> new BusinessException("Not found user"));
-        return credential;
+    }
+
+    private void buildBaseDTO(D d) {
+        final CredentialEntity currentCredential = this.getCurrentCredential();
+        d.setCreatedBy(currentCredential.getUserName());
+        d.setCredentialId(currentCredential.getId());
     }
 
     @Autowired

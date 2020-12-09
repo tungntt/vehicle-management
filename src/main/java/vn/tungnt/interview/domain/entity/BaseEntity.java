@@ -18,14 +18,12 @@ public abstract class BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-//    @CreatedDate
-//    @Temporal(TemporalType.TIMESTAMP)
-//    @Column(name = "created_date", nullable = false)
-//    protected Date createdDate;
-//
-//    @CreatedBy
-//    @Column(name = "created_by", nullable = false)
-//    protected String createdBy;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_date", nullable = false)
+    protected Date createdDate;
+
+    @Column(name = "created_by", nullable = false)
+    protected String createdBy;
 //
 //    @LastModifiedDate
 //    @Temporal(TemporalType.TIMESTAMP)
@@ -42,5 +40,21 @@ public abstract class BaseEntity implements Serializable {
 
     public void setId(final Long id) {
         this.id = id;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(final Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(final String createdBy) {
+        this.createdBy = createdBy;
     }
 }
